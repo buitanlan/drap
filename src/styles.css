@@ -1,0 +1,21 @@
+/* Global CDK drag preview styles */
+.cdk-drag-preview {
+  z-index: 999999 !important;
+  position: fixed !important;
+  pointer-events: none !important;
+}
+
+.cdk-overlay-container .cdk-drag-preview {
+  z-index: 999999 !important;
+}
+
+.cdk-drag-animating {
+  z-index: 999999 !important;
+}
+
+/* Ensure drag preview is always visible */
+body .cdk-drag-preview,
+html .cdk-drag-preview {
+  z-index: 999999 !important;
+  position: fixed !important;
+} 

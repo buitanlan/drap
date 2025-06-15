@@ -1,0 +1,100 @@
+<div class="container mx-auto p-4">
+  <!-- Image Gallery with Scroll Buttons -->
+  <div class="relative w-full">
+    <button 
+      (click)="scrollLeft(galleryContainer)"
+      class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <div 
+      #galleryContainer
+      class="flex flex-nowrap overflow-x-auto gap-4 p-4 scrollbar-hide"
+      style="scrollbar-width: none; -ms-overflow-style: none;"
+      cdkDropList
+      id="gallery-list"
+      [cdkDropListData]="images"
+      [cdkDropListConnectedTo]="['grid-0', 'grid-1', 'grid-2', 'grid-3', 'grid-4', 'grid-5', 'grid-6', 'grid-7', 'grid-8']"
+      [cdkDropListSortingDisabled]="true"
+      [cdkDropListEnterPredicate]="canDropToGallery"
+      (cdkDropListDropped)="onGalleryDrop($event)"
+    >
+      <div 
+        *ngFor="let image of images; let i = index" 
+        class="flex-none w-40"
+        cdkDrag
+        [cdkDragData]="image"
+        [cdkDragDisabled]="isImagePlaced(image)"
+        (cdkDragStarted)="onDragStart(image)"
+        (cdkDragEnded)="onDragEnd()"
+      >
+        <img 
+          [src]="image" 
+          [alt]="'Gallery image'"
+          class="w-40 h-40 object-cover rounded-lg shadow-md select-none transition-opacity duration-300"
+          [class.opacity-40]="isImagePlaced(image)"
+          [class.cursor-move]="!isImagePlaced(image)"
+          [class.cursor-not-allowed]="isImagePlaced(image)"
+          draggable="false"
+        >
+      </div>
+    </div>
+
+    <button 
+      (click)="scrollRight(galleryContainer)"
+      class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- 3x3 Grid Drop Zone -->
+  <div class="mt-8 w-full max-w-3xl mx-auto">
+    <h2 class="text-xl font-semibold mb-4">Drop Zone</h2>
+    <div class="grid grid-cols-3 gap-4 w-full">
+      <div 
+        *ngFor="let cell of gridImages; let i = index"
+        class="grid-cell aspect-square border-2 border-dashed rounded-lg flex items-center justify-center transition-colors"
+        [class.border-gray-300]="cell === null"
+        [class.bg-gray-50]="cell === null"
+        [class.hover:bg-gray-100]="cell === null"
+        [class.border-green-400]="cell === null"
+        [class.bg-green-50]="cell !== null"
+        [class.border-gray-400]="cell !== null"
+        cdkDropList
+        [id]="'grid-' + i"
+        [cdkDropListData]="[cell]"
+        [cdkDropListConnectedTo]="['gallery-list']"
+        [cdkDropListEnterPredicate]="canDropToGridCell"
+        (cdkDropListDropped)="onGridDrop($event, i)"
+      >
+        <div 
+          *ngIf="cell"
+          cdkDrag
+          [cdkDragData]="cell"
+          (cdkDragStarted)="onGridItemDragStart(cell)"
+          (cdkDragEnded)="onDragEnd()"
+          class="w-full h-full"
+        >
+          <img 
+            [src]="cell"
+            [alt]="'Grid image'"
+            class="w-full h-full object-cover rounded-lg cursor-move"
+            draggable="false"
+          >
+        </div>
+        <div 
+          *ngIf="!cell"
+          class="text-gray-400 text-sm text-center"
+        >
+          Drop here
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
